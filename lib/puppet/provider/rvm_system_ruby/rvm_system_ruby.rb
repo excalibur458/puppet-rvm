@@ -1,3 +1,5 @@
+require 'uri'
+
 Puppet::Type.type(:rvm_system_ruby).provide(:rvm) do
   desc "Ruby RVM support."
 
@@ -6,7 +8,16 @@ Puppet::Type.type(:rvm_system_ruby).provide(:rvm) do
   def create
     set_autolib_mode if resource.value(:autolib_mode)
     options = Array(resource[:build_opts])
-    rvmcmd "install", resource[:name], *options
+    if proxy = resource[:proxy]
+      begin 
+        uri = URI.parse(proxy)
+      rescue => error
+        fail "Invalid proxy '#{proxy}': #{error}"
+      end
+      rvmcmd "install", resource[:name], '--proxy', "#{uri.host}:#{uri.port}", *options
+    else
+      rvmcmd "install", resource[:name], *options
+    end
     set_default if resource.value(:default_use)
   end
 

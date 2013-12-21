@@ -145,4 +145,9 @@ Puppet::Type.newtype(:rvm_gem) do
     isnamevar
   end
 
+  newparam(:proxy) do
+    desc "Use proxy to pass a URL to use as a proxy server when installing the gem.
+    This must be a valid URL or an error will be thrown."
+  end
+
 end

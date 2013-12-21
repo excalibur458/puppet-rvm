@@ -13,6 +13,10 @@ Puppet::Type.newtype(:rvm_system_ruby) do
     defaultto ""
   end
 
+  newparam(:proxy) do
+    desc "The HTTP proxy to be used to install Ruby. Must be a valid URL"
+  end
+
   newproperty(:default_use) do
     desc "Should this Ruby be the system default for new terminals?"
     defaultto false

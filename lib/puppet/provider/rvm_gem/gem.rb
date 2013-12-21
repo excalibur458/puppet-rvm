@@ -76,6 +76,16 @@ Puppet::Type.type(:rvm_gem).provide(:gem) do
     # Dependencies are now installed by default
     # command << "--include-dependencies"
 
+    if proxy = resource[:proxy]
+      begin
+        proxy_uri = URI.parse(proxy)
+      rescue => error
+        fail "Invalid proxy '#{proxy}': #{error}"
+      end
+
+      command << '--http-proxy' << "#{proxy}"
+    end
+
     if source = resource[:source]
       begin
         uri = URI.parse(source)
