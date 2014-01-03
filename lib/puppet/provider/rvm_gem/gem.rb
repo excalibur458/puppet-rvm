@@ -31,6 +31,15 @@ Puppet::Type.type(:rvm_gem).provide(:gem) do
       command << name + "$"
     end
 
+    if proxy = resource[:proxy]
+      begin
+        proxy_uri = URI.parse(proxy)
+      rescue => error
+        fail "Invalid proxy '#{proxy}': #{error}"
+      end
+      command << '--http-proxy' << "#{proxy}"
+    end
+
     list = []
     begin
       list = execute(command).split("\n").collect do |set|
@@ -82,7 +91,6 @@ Puppet::Type.type(:rvm_gem).provide(:gem) do
       rescue => error
         fail "Invalid proxy '#{proxy}': #{error}"
       end
-
       command << '--http-proxy' << "#{proxy}"
     end
 
